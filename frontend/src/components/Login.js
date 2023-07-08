@@ -3,6 +3,8 @@ import { Form, Button, Alert } from 'react-bootstrap';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { BASE_URL } from '../constants';
+import { connect } from 'react-redux';
+import { setDoctorId } from '../actions';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -18,7 +20,9 @@ const Login = () => {
       const data = response.data;
 
       if (data.valid) {
-        navigate('/doctor_management');
+        navigate('/doctor_management');        
+        let doctor_id = data.doctor_id
+        setDoctorId(doctor_id);
       } else {
         setError('Invalid email or password. Please try again.');
       }
@@ -65,4 +69,14 @@ const Login = () => {
   );
 };
 
-export default Login;
+const mapStateToProps = (state) => {
+  return {
+    doctorId: state.doctorId,
+  };
+};
+
+const mapDispatchToProps = {
+  setDoctorId,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

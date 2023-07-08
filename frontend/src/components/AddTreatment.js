@@ -5,6 +5,7 @@ import axios from "axios";
 import { BASE_URL } from "../constants";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { useSelector } from 'react-redux';
 
 const AddTreatment = () => {
   const navigate = useNavigate();
@@ -14,7 +15,7 @@ const AddTreatment = () => {
   ]);
   const [selectedDate, setSelectedDate] = useState(new Date());
 
-  const doctorId = 1; // TODO - change this one
+  const doctorId = useSelector((state) => state.doctor.doctorId);
 
   useEffect(() => {
     fetchFavorites();
