@@ -1,30 +1,32 @@
 import React, { useState } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
+import { useDispatch } from 'react-redux';
+import { setDoctorId } from '../doctorslice';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { BASE_URL } from '../constants';
-import { connect } from 'react-redux';
-import { setDoctorId } from '../actions';
+import { BASE_URL_AWS } from '../constants';
 
-const Login = () => {
+const Login = (props) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(`${BASE_URL}/validate_user`, { email, password });
+      const response = await axios.post(`${BASE_URL_AWS}/validate_user`, { email, password });
       const data = response.data;
 
       if (data.valid) {
-        navigate('/doctor_management');        
-        let doctor_id = data.doctor_id
-        setDoctorId(doctor_id);
+        navigate('/doctor_management');
+        props.setToken(data.access_token)
+        dispatch(setDoctorId(data.doctor_id));
       } else {
         setError('Invalid email or password. Please try again.');
+        navigate("/signup")        
       }
     } catch (error) {
       setError('An error occurred during login. Please try again later.');
@@ -69,14 +71,4 @@ const Login = () => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    doctorId: state.doctorId,
-  };
-};
-
-const mapDispatchToProps = {
-  setDoctorId,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default Login;

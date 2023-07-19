@@ -1,28 +1,58 @@
-import React from 'react';
-import './App.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import React from "react";
+import "./App.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import Login from './components/Login';
-import Signup from './components/Signup'
-import AddTreatments from './components/AddTreatment'
-import ViewTreatments from './components/SeeTreatment'
-import DoctorManagement from './components/DoctorManagement';
+import Login from "./components/Login";
+import Signup from "./components/Signup";
+import AddTreatments from "./components/AddTreatment";
+import ViewTreatments from "./components/SeeTreatment";
+import DoctorManagement from "./components/DoctorManagement";
+import useToken from "./useToken";
 
 function App() {
+  const { token, removeToken, setToken } = useToken();
+
   return (
     <Router>
-      <Routes>
-        <Route exact path="/" element={<Login/>} />
-        <Route exact path="/login" element={<Login/>} />
-        <Route exact path="/doctor_management" element={<DoctorManagement />} />
-        <Route exact path="/signup" element={<Signup />} />
-        <Route exact path="/add_treatment" element={<AddTreatments />} />
-        <Route exact path="/see_treatments" element={<ViewTreatments />} />
-      </Routes> 
+      <div className="App">
+        {!token && token !== "" && token !== undefined ? (
+          <>
+            <Login setToken={setToken} />
+          </>
+        ) : (
+          <>
+            <Routes>
+              <>
+                <Route exact path="/" element={<Login />} />
+                <Route
+                  exact
+                  path="/Login"
+                  element={<Login setToken={setToken} />}
+                />
+                <Route exact path="/signup" element={<Signup />} />
+                <Route
+                  exact
+                  path="/doctor_management"
+                  element={<DoctorManagement />}
+                />
+                <Route
+                  exact
+                  path="/add_treatment"
+                  element={<AddTreatments token={token} setToken={setToken} />}
+                />
+                <Route
+                  exact
+                  path="/see_treatments"
+                  element={<ViewTreatments token={token} setToken={setToken} />}
+                />
+              </>
+            </Routes>
+          </>
+        )}
+      </div>
     </Router>
   );
 }
 
 export default App;
-

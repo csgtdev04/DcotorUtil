@@ -2,19 +2,18 @@ import React, { useState, useEffect } from "react";
 import { Form, Button, Table } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { BASE_URL } from "../constants";
+import { BASE_URL_AWS } from "../constants";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useSelector } from 'react-redux';
 
-const AddTreatment = () => {
+const AddTreatment = (props) => {
   const navigate = useNavigate();
   const [favoriteTreatments, setFavoriteTreatments] = useState([]);
   const [treatmentRecords, setTreatmentRecords] = useState([
     { code: "", quantity: "" },
   ]);
   const [selectedDate, setSelectedDate] = useState(new Date());
-
   const doctorId = useSelector((state) => state.doctor.doctorId);
 
   useEffect(() => {
@@ -23,8 +22,12 @@ const AddTreatment = () => {
 
   const fetchFavorites = async () => {
     try {
-      const response = await axios.post(`${BASE_URL}/get_favorites`, {
+      const response = await axios.post(`${BASE_URL_AWS}/get_favorites`, {
         doctor_id: doctorId,
+      }, {
+        headers: {
+          Authorization: `Bearer ${props.token}`
+        },
       });
       setFavoriteTreatments(response.data.favorites);
     } catch (error) {
@@ -41,15 +44,19 @@ const AddTreatment = () => {
     }));
 
     try {
-      await axios.post(`${BASE_URL}/save_treatments`, {
+      await axios.post(`${BASE_URL_AWS}/save_treatments`, {
         doctor_id: doctorId,
         treatments: newTreatments,
         date: selectedDate.toISOString(),
+      }, {
+        headers: {
+          Authorization: `Bearer ${props.token}`
+        },
       });
+      navigate("/see_treatments");
     } catch (error) {
       console.error(error);
     }
-    navigate("/see_treatments");
   };
 
   const handleAddRow = () => {
