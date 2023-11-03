@@ -8,10 +8,11 @@ import Signup from "./components/Signup";
 import AddTreatments from "./components/AddTreatment";
 import ViewTreatments from "./components/SeeTreatment";
 import DoctorManagement from "./components/DoctorManagement";
+import Admin from "./components/Admin";
 import useToken from "./useToken";
 
 function App() {
-  const { token, removeToken, setToken } = useToken();
+  const { token, setToken } = useToken();
 
   return (
     <Router>
@@ -45,6 +46,11 @@ function App() {
                   exact
                   path="/see_treatments"
                   element={<ViewTreatments token={token} setToken={setToken} />}
+                />
+                <Route
+                  exact
+                  path="/admin"
+                  element={<Admin />}
                 />
               </>
             </Routes>

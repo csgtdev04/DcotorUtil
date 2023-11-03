@@ -1,35 +1,44 @@
 import React, { useState, useEffect } from "react";
 import { Form, Button, Table } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
-import { BASE_URL_AWS } from "../constants";
+import { BASE_URL } from "../constants";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { useSelector } from 'react-redux';
+import { useSelector } from "react-redux";
+import Select from "react-select";
 
 const AddTreatment = (props) => {
   const navigate = useNavigate();
-  const [favoriteTreatments, setFavoriteTreatments] = useState([]);
+  const location = useLocation();
+  const doctorId = location.state?.doctorId;
+  // const doctorId = useSelector((state) => state.doctor.doctorId);
+
+  const [docTreatments, setDocTreatments] = useState([]);
   const [treatmentRecords, setTreatmentRecords] = useState([
     { code: "", quantity: "" },
   ]);
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const doctorId = useSelector((state) => state.doctor.doctorId);
 
   useEffect(() => {
-    fetchFavorites();
+    fetchTreatments();
   }, []);
 
-  const fetchFavorites = async () => {
+  const fetchTreatments = async () => {
     try {
-      const response = await axios.post(`${BASE_URL_AWS}/get_favorites`, {
-        doctor_id: doctorId,
-      }, {
-        headers: {
-          Authorization: `Bearer ${props.token}`
+      const response = await axios.post(
+        `${BASE_URL}/get_doc_treatments`,
+        {
+          doctor_id: doctorId,
         },
-      });
-      setFavoriteTreatments(response.data.favorites);
+        {
+          headers: {
+            Authorization: `Bearer ${props.token}`,
+          },
+        }
+      );
+
+      setDocTreatments(response.data.treatments);
     } catch (error) {
       console.error(error);
     }
@@ -44,16 +53,20 @@ const AddTreatment = (props) => {
     }));
 
     try {
-      await axios.post(`${BASE_URL_AWS}/save_treatments`, {
-        doctor_id: doctorId,
-        treatments: newTreatments,
-        date: selectedDate.toISOString(),
-      }, {
-        headers: {
-          Authorization: `Bearer ${props.token}`
+      await axios.post(
+        `${BASE_URL}/save_treatments`,
+        {
+          doctor_id: doctorId,
+          treatments: newTreatments,
+          date: selectedDate.toISOString(),
         },
-      });
-      navigate("/see_treatments");
+        {
+          headers: {
+            Authorization: `Bearer ${props.token}`,
+          },
+        }
+      );
+      navigate("/see_treatments", { state: { doctorId } });
     } catch (error) {
       console.error(error);
     }
@@ -107,23 +120,19 @@ const AddTreatment = (props) => {
               {treatmentRecords.map((record, index) => (
                 <tr key={index}>
                   <td>
-                    <Form.Control
-                      as="select"
-                      value={record.code}
-                      onChange={(e) => handleCodeChange(index, e.target.value)}
-                    >
-                      <option value="">
-                        Select a favorite treatment code or enter below
-                      </option>
-                      {favoriteTreatments.map((favorite) => (
-                        <option
-                          key={favorite.treatment_id}
-                          value={favorite.treatment_code}
-                        >
-                          {favorite.treatment_code} - {favorite.description}
-                        </option>
-                      ))}
-                    </Form.Control>
+                    <Select
+                      options={docTreatments.map((favorite) => ({
+                        label: `${favorite.treatment_code} - ${favorite.description}`,
+                        value: favorite.treatment_code,
+                      }))}
+                      value={docTreatments.find(
+                        (favorite) => favorite.treatment_code === record.code
+                      )}
+                      onChange={(selectedOption) =>
+                        handleCodeChange(index, selectedOption.value)
+                      }
+                      isSearchable
+                    />
                     <br />
                     <Form.Control
                       type="text"

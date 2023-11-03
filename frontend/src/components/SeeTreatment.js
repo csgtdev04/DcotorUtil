@@ -2,16 +2,20 @@ import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
-import { BASE_URL_AWS } from "../constants";
+import { BASE_URL } from "../constants";
 import { useSelector } from 'react-redux';
+import { useLocation } from "react-router-dom";
 
 const ViewTreatments = (props) => {
+  const location = useLocation();
+  const doctorId = location.state?.doctorId;
+  // const doctorId = useSelector((state) => state.doctor.doctorId);
+
   const [date, setDate] = useState(new Date());
   const [treatments, setTreatments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const doctorId = useSelector((state) => state.doctor.doctorId);
 
   useEffect(() => {
     fetchTreatments();
@@ -21,8 +25,8 @@ const ViewTreatments = (props) => {
     try {
       setLoading(true);
       setError("");
-
-      const response = await axios.post(`${BASE_URL_AWS}/get_treatments`, {
+      console.log("Doctor id in get treatments: " + doctorId);
+      const response = await axios.post(`${BASE_URL}/get_treatments`, {
         date: date.toISOString(),
         doctor_id: doctorId,
       }, {
@@ -31,8 +35,7 @@ const ViewTreatments = (props) => {
         },
       });
 
-      console.log(response.data.treatments[0]);
-
+      // console.log(response.data.treatments[0]);
       setTreatments(response.data.treatments);
       setLoading(false);
     } catch (error) {

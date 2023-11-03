@@ -1,16 +1,18 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const DoctorManagement = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const doctorId = location.state?.doctorId;
 
   const handleSeeTreatments = () => {
-    navigate("/see_treatments");
+    navigate("/see_treatments", { state: { doctorId } });
   };
 
   const handleAddTreatments = () => {
-    navigate("/add_treatment");
+    navigate("/add_treatment", { state: { doctorId } });
   };
 
   return (

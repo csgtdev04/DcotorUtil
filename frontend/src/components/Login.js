@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
-import { setDoctorId } from '../doctorslice';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { BASE_URL_AWS } from '../constants';
+import { useNavigate, Link } from 'react-router-dom';
+import { BASE_URL } from '../constants';
+import { setDoctorId } from '../actions';
 
 const Login = (props) => {
   const [email, setEmail] = useState('');
@@ -17,13 +17,18 @@ const Login = (props) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(`${BASE_URL_AWS}/validate_user`, { email, password });
+      const response = await axios.post(`${BASE_URL}/validate_user`, { email, password });
       const data = response.data;
-
+      // console.log("user data: " + data.doctor_id)
       if (data.valid) {
-        navigate('/doctor_management');
+        if (email === 'admin@gmail.com' && password === 'admin') {
+          navigate('/admin', { state: { doctorId: data.doctor_id } });
+        } else {
+          navigate('/doctor_management', { state: { doctorId: data.doctor_id } });
+        }
+
         props.setToken(data.access_token)
-        dispatch(setDoctorId(data.doctor_id));
+        // dispatch(setDoctorId(data.doctor_id));
       } else {
         setError('Invalid email or password. Please try again.');
         navigate("/signup")        
@@ -65,6 +70,10 @@ const Login = (props) => {
           <Button variant="primary" type="submit" className="mt-4">
             Login
           </Button>
+
+          <p className="mt-2">
+            Don't have an account? <br></br><Link to="/signup">Sign up here</Link>
+          </p>
         </Form>
       </div>
     </div>
