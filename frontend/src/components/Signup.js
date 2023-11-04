@@ -3,6 +3,7 @@ import { Form, Button, Alert } from 'react-bootstrap';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { BASE_URL } from '../constants';
+import '../Signup.css';
 
 const Signup = () => {
   const [name, setName] = useState('');
@@ -30,9 +31,9 @@ const Signup = () => {
   };
 
   return (
-    <div className="container mx-auto flex justify-center items-center h-screen">
-      <div className="w-72">
-        <h1 className="text-2xl font-bold mb-4">Signup Page</h1>
+    <div className="signup-container">
+      <div className="signup-box">
+        <h1 className="signup-title">Signup Page</h1>
 
         {error && <Alert variant="danger">{error}</Alert>}
 
@@ -72,7 +73,7 @@ const Signup = () => {
           </Button>
 
           <p className="mt-2">
-            Already have an account? <Link to="/login">Login here</Link>
+            Already have an account? <br></br><Link to="/login">Login here</Link>
           </p>
         </Form>
       </div>

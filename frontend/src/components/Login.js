@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { BASE_URL } from '../constants';
 import { setDoctorId } from '../actions';
+import '../Login.css';
 
 const Login = (props) => {
   const [email, setEmail] = useState('');
@@ -40,9 +41,9 @@ const Login = (props) => {
   };
 
   return (
-    <div className="container mx-auto flex justify-center items-center h-screen">
-      <div className="w-72">
-        <h1 className="text-2xl font-bold mb-4">Login Page</h1>
+    <div className="login-container">
+      <div className="login-box">
+        <h1 className="login-title">Doctor Management</h1>
 
         {error && <Alert variant="danger">{error}</Alert>}
 

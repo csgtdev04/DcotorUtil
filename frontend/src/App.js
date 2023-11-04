@@ -35,7 +35,7 @@ function App() {
                 <Route
                   exact
                   path="/doctor_management"
-                  element={<DoctorManagement />}
+                  element={<DoctorManagement token={token} />}
                 />
                 <Route
                   exact

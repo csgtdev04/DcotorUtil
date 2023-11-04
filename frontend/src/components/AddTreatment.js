@@ -7,6 +7,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useSelector } from "react-redux";
 import Select from "react-select";
+import "../AddTreatment.css";
 
 const AddTreatment = (props) => {
   const navigate = useNavigate();
@@ -96,18 +97,34 @@ const AddTreatment = (props) => {
   };
 
   return (
-    <div style={{ padding: "1rem" }}>
-      <h1>Add your Treatments</h1>
+    <div className="add-treatment-container">
+      <Button
+        variant="primary"
+        className="float-right"
+        onClick={() => navigate("/see_treatments", { state: { doctorId } })}
+      >
+        See Treatments
+      </Button>
+      <h1 className="add-treatment-title">Add Treatments</h1>
+      <div className="clearfix"></div>
+      <Button
+        variant="primary"
+        className="float-right mb-1"
+        onClick={() => navigate("/doctor_management", { state: { doctorId } })}
+      >
+        Home
+      </Button>
+
+
+      <div className="date-picker-container">
+        <DatePicker
+          selected={selectedDate}
+          onChange={(date) => setSelectedDate(date)}
+          maxDate={new Date()}
+        />
+      </div>
+
       <Form onSubmit={handleSaveTreatment}>
-        <Form.Group controlId="date">
-          <Form.Label>Select a date below</Form.Label>
-          <br />
-          <DatePicker
-            selected={selectedDate}
-            onChange={(date) => setSelectedDate(date)}
-            maxDate={new Date()}
-          />
-        </Form.Group>
         <div className="pt-6">
           <Table bordered style={{ marginBottom: "1rem" }}>
             <thead>

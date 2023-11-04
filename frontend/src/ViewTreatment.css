@@ -1,0 +1,36 @@
+/* ViewTreatments.css */
+.view-treatments-container {
+    padding: 20px;
+  }
+  
+  .page-heading {
+    margin-bottom: 20px;
+    color: #007bff;
+  }
+  
+  .date-picker-container {
+    margin-bottom: 20px;
+  }
+  
+  .treatments-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  
+  .treatments-table th,
+  .treatments-table td {
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #ccc;
+  }
+  
+  .treatments-table th {
+    background-color: #f2f2f2;
+  }
+  
+  .loading-error-message {
+    color: red;
+    font-weight: bold;
+  }
+  
