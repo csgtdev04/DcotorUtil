@@ -3,7 +3,7 @@ import { Form, Button, Alert } from 'react-bootstrap';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { BASE_URL } from '../constants';
-import '../Signup.css';
+import '../style/Signup.css';
 
 const Signup = () => {
   const [name, setName] = useState('');

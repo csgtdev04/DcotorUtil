@@ -5,9 +5,8 @@ import axios from "axios";
 import { BASE_URL } from "../constants";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { useSelector } from "react-redux";
 import Select from "react-select";
-import "../AddTreatment.css";
+import "../style/AddTreatment.css";
 
 const AddTreatment = (props) => {
   const navigate = useNavigate();
@@ -20,9 +19,10 @@ const AddTreatment = (props) => {
     { code: "", quantity: "" },
   ]);
   const [selectedDate, setSelectedDate] = useState(new Date());
-
+  
   useEffect(() => {
     fetchTreatments();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchTreatments = async () => {
@@ -139,7 +139,7 @@ const AddTreatment = (props) => {
                   <td>
                     <Select
                       options={docTreatments.map((favorite) => ({
-                        label: `${favorite.treatment_code} - ${favorite.description}`,
+                        label: `${favorite.treatment_code}`,
                         value: favorite.treatment_code,
                       }))}
                       value={docTreatments.find(

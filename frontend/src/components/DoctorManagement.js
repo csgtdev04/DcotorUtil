@@ -36,7 +36,11 @@ const DoctorManagement = (props) => {
     };
 
     fetchPreviousTreatments();
-  }, [doctorId]);
+  }, [doctorId, props.token]);
+
+  const handleLogout = () => {
+    navigate("/login");
+  };
 
   const handleSeeTreatments = () => {
     navigate("/see_treatments", { state: { doctorId } });
@@ -48,6 +52,9 @@ const DoctorManagement = (props) => {
 
   return (
     <div className="container mt-5">
+      <Button variant="danger" className="position-absolute top-0 start-0 m-3" onClick={handleLogout}>
+        Logout
+      </Button>
       <Row>
         <Col md={8}>
           <div className="d-flex flex-column justify-content-center align-items-center h-100">

@@ -1,18 +1,15 @@
 import React, { useState } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
-import { useDispatch } from 'react-redux';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { BASE_URL } from '../constants';
-import { setDoctorId } from '../actions';
-import '../Login.css';
+import '../style/Login.css';
 
 const Login = (props) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const handleLogin = async (e) => {
     e.preventDefault();

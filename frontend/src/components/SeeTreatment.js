@@ -3,10 +3,9 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
 import { BASE_URL } from "../constants";
-import { useSelector } from 'react-redux';
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
-import "../ViewTreatment.css";
+import "../style/ViewTreatment.css";
 
 const ViewTreatments = (props) => {
   const location = useLocation();
@@ -22,6 +21,7 @@ const ViewTreatments = (props) => {
 
   useEffect(() => {
     fetchTreatments();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [date]);
 
   const fetchTreatments = async () => {
@@ -38,7 +38,6 @@ const ViewTreatments = (props) => {
         },
       });
 
-      // console.log(response.data.treatments[0]);
       setTreatments(response.data.treatments);
       setLoading(false);
     } catch (error) {
