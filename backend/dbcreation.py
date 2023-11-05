@@ -1,4 +1,4 @@
-from app import app
+from application import app
 from extensions import db
 from models import Doctor, Treatment, DoctorTreatment
 

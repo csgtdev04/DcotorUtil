@@ -10,25 +10,25 @@ from models import Doctor, DoctorTreatment, Treatment
 from extensions import db, migrate
 from config import SQLALCHEMY_DATABASE_URI
 
-app = Flask(__name__)
+application = Flask(__name__)
 
-app.config["JWT_SECRET_KEY"] = "please-remember-to-change-me"
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=15)
-jwt = JWTManager(app)
+application.config["JWT_SECRET_KEY"] = "please-remember-to-change-me"
+application.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=15)
+jwt = JWTManager(application)
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-app.logger.addHandler(logging.StreamHandler())
+application.logger.addHandler(logging.StreamHandler())
 
-CORS(app)
+CORS(application)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
-app.config['CORS_HEADERS'] = 'Content-Type'
+application.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
+application.config['CORS_HEADERS'] = 'Content-Type'
 
-db.init_app(app)
-migrate.init_app(app, db)
+db.init_application(application)
+migrate.init_application(application, db)
 
-@app.after_request
+@application.after_request
 def refresh_expiring_jwts(response):
     try:
         exp_timestamp = get_jwt()["exp"]
@@ -45,7 +45,7 @@ def refresh_expiring_jwts(response):
         # Case where there is not a valid JWT. Just return the original respone
         return response
 
-@app.route('/save_user', methods=['POST'])
+@application.route('/save_user', methods=['POST'])
 def save_user():
     body = request.get_json()
     name = body.get('name')
@@ -67,7 +67,7 @@ def save_user():
     return jsonify({"valid": True})
 
 
-@app.route('/validate_user', methods=['POST'])
+@application.route('/validate_user', methods=['POST'])
 def validate_user():
     body = request.get_json()
     # after login, check if user email and pwd in the db, return true or false
@@ -81,13 +81,13 @@ def validate_user():
     else:
         return jsonify({"valid": False})
     
-@app.route('/doctors', methods=['GET'])
+@application.route('/doctors', methods=['GET'])
 def get_doctors():
     try:
         doctors = Doctor.query.all()
         doctors_list = []
         for doctor in doctors:
-            doctors_list.append({
+            doctors_list.applicationend({
                 'id': doctor.id,
                 'name': doctor.name,
                 'email': doctor.email
@@ -98,7 +98,7 @@ def get_doctors():
         print(e)
         return jsonify({'error': 'Failed to fetch doctors'}), 500
     
-@app.route('/doctors/<int:doctor_id>', methods=['DELETE'])
+@application.route('/doctors/<int:doctor_id>', methods=['DELETE'])
 def delete_doctor(doctor_id):
     try:
         doctor = Doctor.query.get(doctor_id)
@@ -114,7 +114,7 @@ def delete_doctor(doctor_id):
         db.session.rollback()
         return jsonify({'error': 'Failed to delete doctor'}), 500
     
-@app.route('/update_favorite', methods=['POST'])
+@application.route('/update_favorite', methods=['POST'])
 @jwt_required()
 def update_fav():
     body = request.get_json()
@@ -133,7 +133,7 @@ def update_fav():
         return jsonify({'error': 'Treatment not found.'}), 404
 
 
-@app.route('/get_doc_treatments', methods=['POST'])
+@application.route('/get_doc_treatments', methods=['POST'])
 @jwt_required()
 def get_doc_treaments():
     body = request.get_json()
@@ -144,7 +144,7 @@ def get_doc_treaments():
         doc_treatments = Treatment.query.filter_by(doctor_id=doctor_id).all()
         treatments_json = []
         for treatment in doc_treatments:
-            treatments_json.append({
+            treatments_json.applicationend({
                 'treatment_id': treatment.id,
                 'treatment_code': treatment.treatment_code,
                 'description': treatment.description
@@ -153,7 +153,7 @@ def get_doc_treaments():
     else:
         return jsonify({'error': 'Doctor not found.'}), 404
 
-@app.route('/save_treatments', methods=['POST'])
+@application.route('/save_treatments', methods=['POST'])
 @jwt_required()
 def save_treatments():
     body = request.get_json()
@@ -207,7 +207,7 @@ def save_treatments():
     else:
         return jsonify({'error': 'Doctor not found.'}), 404
 
-@app.route('/get_treatments', methods=['POST'])
+@application.route('/get_treatments', methods=['POST'])
 @jwt_required()
 def get_treatments():
     body = request.get_json()
@@ -235,14 +235,14 @@ def get_treatments():
             'treatment_code': doctor_treatment.treatment_code,
             'quantity': doctor_treatment.quantity,
         }
-        treatment_list.append(treatment_data)
+        treatment_list.applicationend(treatment_data)
     return jsonify({'treatments': treatment_list})
 
-@app.route("/logout", methods=["POST"])
+@application.route("/logout", methods=["POST"])
 def logout():
     response = jsonify({"msg": "logout successful"})
     unset_jwt_cookies(response)
     return response
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    application.run(debug=True)
