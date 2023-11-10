@@ -1,7 +1,5 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-from flask_jwt_extended import create_access_token,get_jwt,get_jwt_identity, \
-                               unset_jwt_cookies, jwt_required, JWTManager
 from datetime import datetime, timedelta, timezone
 import logging
 import json
@@ -12,10 +10,6 @@ from config import SQLALCHEMY_DATABASE_URI
 
 application = Flask(__name__)
 
-application.config["JWT_SECRET_KEY"] = "please-remember-to-change-me"
-application.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=15)
-jwt = JWTManager(application)
-
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 application.logger.addHandler(logging.StreamHandler())
@@ -25,25 +19,8 @@ CORS(application)
 application.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
 application.config['CORS_HEADERS'] = 'Content-Type'
 
-db.init_application(application)
-migrate.init_application(application, db)
-
-@application.after_request
-def refresh_expiring_jwts(response):
-    try:
-        exp_timestamp = get_jwt()["exp"]
-        now = datetime.now(timezone.utc)
-        target_timestamp = datetime.timestamp(now + timedelta(minutes=5))
-        if target_timestamp > exp_timestamp:
-            access_token = create_access_token(identity=get_jwt_identity())
-            data = response.get_json()
-            if type(data) is dict:
-                data["access_token"] = access_token 
-                response.data = json.dumps(data)
-        return response
-    except (RuntimeError, KeyError):
-        # Case where there is not a valid JWT. Just return the original respone
-        return response
+db.init_app(application)
+migrate.init_app(application, db)
 
 @application.route('/save_user', methods=['POST'])
 def save_user():
@@ -76,8 +53,7 @@ def validate_user():
     user = Doctor.query.filter_by(email=email, password=password).first()
     
     if user:
-        access_token = create_access_token(identity=email)
-        return jsonify({"valid": True, "doctor_id": user.id, "access_token": access_token})
+        return jsonify({"valid": True, "doctor_id": user.id})
     else:
         return jsonify({"valid": False})
     
@@ -115,7 +91,6 @@ def delete_doctor(doctor_id):
         return jsonify({'error': 'Failed to delete doctor'}), 500
     
 @application.route('/update_favorite', methods=['POST'])
-@jwt_required()
 def update_fav():
     body = request.get_json()
     # change from fav to not fav, update the treatment table
@@ -134,7 +109,6 @@ def update_fav():
 
 
 @application.route('/get_doc_treatments', methods=['POST'])
-@jwt_required()
 def get_doc_treaments():
     body = request.get_json()
     doctor_id = body.get('doctor_id')
@@ -154,7 +128,6 @@ def get_doc_treaments():
         return jsonify({'error': 'Doctor not found.'}), 404
 
 @application.route('/save_treatments', methods=['POST'])
-@jwt_required()
 def save_treatments():
     body = request.get_json()
     # get all treatments from body and save in doctor_treatment table for
@@ -208,7 +181,6 @@ def save_treatments():
         return jsonify({'error': 'Doctor not found.'}), 404
 
 @application.route('/get_treatments', methods=['POST'])
-@jwt_required()
 def get_treatments():
     body = request.get_json()
     # get date, doctor_id from the body and then fetch all treatments for that
@@ -237,12 +209,6 @@ def get_treatments():
         }
         treatment_list.applicationend(treatment_data)
     return jsonify({'treatments': treatment_list})
-
-@application.route("/logout", methods=["POST"])
-def logout():
-    response = jsonify({"msg": "logout successful"})
-    unset_jwt_cookies(response)
-    return response
 
 if __name__ == '__main__':
     application.run(debug=True)
