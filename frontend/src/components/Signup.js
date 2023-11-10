@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
-import { BASE_URL } from '../constants';
+import { BASE_URL_AWS } from '../constants';
 import '../style/Signup.css';
 
 const Signup = () => {
@@ -16,7 +16,7 @@ const Signup = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(`${BASE_URL}/save_user`, { name, email, password });
+      const response = await axios.post(`${BASE_URL_AWS}/save_user`, { name, email, password });
       const data = response.data;
 
       if (data.valid) {

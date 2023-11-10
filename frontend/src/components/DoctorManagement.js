@@ -2,7 +2,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { Row, Col, Button, Card, ListGroup } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import React, { useState, useEffect } from "react";
-import { BASE_URL } from "../constants";
+import { BASE_URL_AWS } from "../constants";
 import axios from "axios";
 
 const DoctorManagement = (props) => {
@@ -18,7 +18,7 @@ const DoctorManagement = (props) => {
     const fetchPreviousTreatments = async () => {
       try {
         const response = await axios.post(
-          `${BASE_URL}/get_doc_treatments`,
+          `${BASE_URL_AWS}/get_doc_treatments`,
           {
             doctor_id: doctorId,
           },

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
-import { BASE_URL } from '../constants';
+import { BASE_URL_AWS } from '../constants';
 import '../style/Login.css';
 
 const Login = (props) => {
@@ -15,7 +15,7 @@ const Login = (props) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(`${BASE_URL}/validate_user`, { email, password });
+      const response = await axios.post(`${BASE_URL_AWS}/validate_user`, { email, password });
       const data = response.data;
       // console.log("user data: " + data.doctor_id)
       if (data.valid) {

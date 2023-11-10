@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
-import { BASE_URL } from "../constants";
+import { BASE_URL_AWS } from "../constants";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import "../style/ViewTreatment.css";
@@ -29,7 +29,7 @@ const ViewTreatments = (props) => {
       setLoading(true);
       setError("");
       console.log("Doctor id in get treatments: " + doctorId);
-      const response = await axios.post(`${BASE_URL}/get_treatments`, {
+      const response = await axios.post(`${BASE_URL_AWS}/get_treatments`, {
         date: date.toISOString(),
         doctor_id: doctorId,
       }, {

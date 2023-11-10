@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Form, Button, Table } from "react-bootstrap";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
-import { BASE_URL } from "../constants";
+import { BASE_URL_AWS } from "../constants";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Select from "react-select";
@@ -28,7 +28,7 @@ const AddTreatment = (props) => {
   const fetchTreatments = async () => {
     try {
       const response = await axios.post(
-        `${BASE_URL}/get_doc_treatments`,
+        `${BASE_URL_AWS}/get_doc_treatments`,
         {
           doctor_id: doctorId,
         },
@@ -55,7 +55,7 @@ const AddTreatment = (props) => {
 
     try {
       await axios.post(
-        `${BASE_URL}/save_treatments`,
+        `${BASE_URL_AWS}/save_treatments`,
         {
           doctor_id: doctorId,
           treatments: newTreatments,

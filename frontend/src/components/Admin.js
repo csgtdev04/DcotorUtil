@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Table, Button, Alert } from "react-bootstrap";
 import axios from "axios";
-import { BASE_URL } from "../constants";
+import { BASE_URL_AWS } from "../constants";
 
 const Admin = () => {
   const [doctors, setDoctors] = useState([]);
@@ -10,7 +10,7 @@ const Admin = () => {
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/doctors`);
+        const response = await axios.get(`${BASE_URL_AWS}/doctors`);
         setDoctors(response.data);
       } catch (error) {
         setError("Error fetching doctors. Please try again later.");
@@ -23,7 +23,7 @@ const Admin = () => {
 
   const handleDeleteDoctor = async (doctorId) => {
     try {
-      await axios.delete(`${BASE_URL}/doctors/${doctorId}`);
+      await axios.delete(`${BASE_URL_AWS}/doctors/${doctorId}`);
       setDoctors(doctors.filter((doctor) => doctor.id !== doctorId));
     } catch (error) {
       setError("Error deleting doctor. Please try again later.");
